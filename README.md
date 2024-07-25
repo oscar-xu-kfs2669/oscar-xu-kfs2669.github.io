@@ -44,7 +44,7 @@ for each episode in num_episodes:
 ```
 
 #### Monte Carlo Performance
-![Monte Carlo Performance](https://github.com/oscar-xu-kfs2669/oscar-xu-kfs2669.github.io/raw/main/1.Monte-Carlo.gif)
+![Monte Carlo Performance](https://github.com/oscar-xu-kfs2669/Lunar-Navigator/blob/main/1.Monte-Carlo.gif)
 
 ### II. Q-Learning
 
@@ -83,7 +83,7 @@ for each episode in num_episodes:
 ```
 
 #### Q-Learning Performance
-![Q-Learning Performance](https://github.com/oscar-xu-kfs2669/oscar-xu-kfs2669.github.io/raw/main/2.Q-Learning.gif)
+![Q-Learning Performance](https://github.com/oscar-xu-kfs2669/Lunar-Navigator/blob/main/2.Q-Learning.gif)
 
 ### III. Deep Q-Network (DQN)
 
@@ -108,6 +108,20 @@ DQN combines Q-learning with deep neural networks to approximate the Q-value fun
 
 #### Pseudocode:
 ```python
+# Neural Network
+class DQN(nn.Module):
+    def __init__(self, state_size, action_size, seed):
+        super(DQN, self).__init__()
+        self.seed = torch.manual_seed(seed)
+        self.fc1 = nn.Linear(state_size, 128)
+        self.fc2 = nn.Linear(128, 128)
+        self.fc3 = nn.Linear(128, action_size)
+
+    def forward(self, state):
+        x = F.relu(self.fc1(state))
+        x = F.relu(self.fc2(x))
+        return self.fc3(x)
+
 Initialize replay buffer
 Initialize Q-network and target Q-network
 for each episode in num_episodes:
@@ -128,7 +142,7 @@ for each episode in num_episodes:
 ```
 
 #### DQN Performance
-![DQN Performance](https://github.com/oscar-xu-kfs2669/oscar-xu-kfs2669.github.io/raw/main/3.DQN.gif)
+![DQN Performance](https://github.com/oscar-xu-kfs2669/Lunar-Navigator/blob/main/3.DQN.gif)
 
 ### IV. DQN with Prioritized Experience Replay (PER)
 
@@ -172,10 +186,19 @@ for each episode in num_episodes:
         if done:
             break
     epsilon = max(epsilon_min, epsilon * epsilon_decay)
+
+# TD Error
+def compute_td_error(state, action, reward, next_state, done, gamma):
+    with torch.no_grad():
+        current_q = Q_network(state).gather(1, torch.tensor(action).unsqueeze(0)).squeeze(0)
+        max_next_q = target_Q_network(next_state).max(1)[0]
+        td_target = reward + (1 - done) * gamma * max_next_q
+        td_error = td_target - current_q
+    return abs(td_error).item()
 ```
 
 #### DQN-PER Performance
-![DQN-PER Performance](https://github.com/oscar-xu-kfs2669/oscar-xu-kfs2669.github.io/raw/main/4.DQN-PER.gif)
+![DQN-PER Performance](https://github.com/oscar-xu-kfs2669/Lunar-Navigator/blob/main/4.DQN-PER.gif)
 
 ## Results
 
@@ -198,7 +221,7 @@ DQN and DQN-PER demonstrated better learning and problem-solving capabilities fo
 ## Author
 
 - **Oscar Xu** - Master's in Computer Science at Northwestern University
-- **GitHub**: [oscar-xu-kfs2669](https://github.com/oscar-xu-kfs2669)
+- **GitHub**: [oscar-xu-kfs2669/Lunar-Navigator](https://github.com/oscar-xu-kfs2669/Lunar-Navigator)
 
 ## License
 
